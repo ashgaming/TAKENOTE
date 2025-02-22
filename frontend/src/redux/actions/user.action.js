@@ -1,8 +1,10 @@
-import { DATA_USER_ERROR, DATA_USER_REQUEST, DATA_USER_RESET, DATA_USER_SUCCESS, LOGIN_USER_ERROR, LOGIN_USER_REQUEST, LOGIN_USER_RESET, LOGIN_USER_SUCCESS, REGISTER_USER_REQUEST, REGISTER_USER_RESET, REGISTER_USER_SUCCESS } from '../constants/user.constant';
+import { DATA_USER_ERROR, DATA_USER_REQUEST, DATA_USER_RESET, DATA_USER_SUCCESS, LOGIN_USER_ERROR, LOGIN_USER_REQUEST, LOGIN_USER_RESET, LOGIN_USER_SUCCESS, REGISTER_USER_ERROR, REGISTER_USER_REQUEST, REGISTER_USER_RESET, REGISTER_USER_SUCCESS } from '../constants/user.constant';
 import axios from 'axios'
 import { clearUserSession, getUserSession, setUserSession } from '../methods/user.session';
 
-export const BACKEND_URL = import.meta.env.BACKEND_URL ? import.meta.env.BACKEND_URL : 'http://localhost:4000'
+export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL : 'http://localhost:4000'
+
+console.log(BACKEND_URL)
 
 export const getUserData = () => async (dispatch, navigate) => {
 
