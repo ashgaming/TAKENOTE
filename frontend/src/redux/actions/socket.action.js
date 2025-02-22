@@ -1,8 +1,9 @@
 import { SETUP_SOCKET_ERROR, SETUP_SOCKET_REQUEST, SETUP_SOCKET_RESET, SETUP_SOCKET_SUCCESS } from '../constants/socket.constants';
 import io from 'socket.io-client';
+import { BACKEND_URL } from './user.action';
 
 export const setUpSocket = () => async (dispatch) => {
-
+    
     try {
 
         dispatch({
@@ -11,7 +12,7 @@ export const setUpSocket = () => async (dispatch) => {
 
 
         // Initialize the socket instance globally (singleton)
-        const socket = io(`http://localhost:4000`, {
+        const socket = io(`${BACKEND_URL}`, {
             transports: ['websocket'], // Force WebSocket transport
             withCredentials: false,
         });
