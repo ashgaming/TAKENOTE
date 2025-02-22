@@ -17,16 +17,18 @@ const middleware = [thunk];
 
 
 
-//during dev
+//during dev 
+/*
 const store = createStore(rootReducer, initialState,
     composeWithDevTools(applyMiddleware(...middleware),
     ))
+    */
  
  // during production 
- /*
+
   const store = createStore(rootReducer, initialState,
      applyMiddleware(...middleware)) 
- */
+
 
 
 
