@@ -1,13 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const ora = require("ora");
 
-function connectToDB() {
-    mongoose.connect(process.env.DATABASE_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(() => {
-        console.log('Connected to DB');
-    }).catch(err => console.log(`DB failed to connect` , err));
-    return
+
+
+async function connectToDB() {
+    mongoose.set('debug', true);
+    console.log('Database URL:', process.env.DATABASE_URL);
+
+    const spinner = ora('Connecting to MongoDB...').start(); // Start loader
+
+    try {
+        await mongoose.connect(process.env.DATABASE_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+
+        spinner.succeed('Connected to MongoDB ✅'); // Success message
+    } catch (err) {
+        spinner.fail('Failed to connect to MongoDB ❌'); // Error message
+        console.error(err);
+    }
 }
 
 module.exports = connectToDB;
