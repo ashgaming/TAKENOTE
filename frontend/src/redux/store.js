@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import {thunk} from 'redux-thunk';
 import rootReducer from './combineReducer';
 import { getUserSession } from './methods/user.session';
-import { composeWithDevTools } from 'redux-devtools-extension'
+//import { composeWithDevTools } from 'redux-devtools-extension'
 
 
 const initialState = {
@@ -18,15 +18,15 @@ const middleware = [thunk];
 
 
 //during dev
+/*
 const store = createStore(rootReducer, initialState,
     composeWithDevTools(applyMiddleware(...middleware),
     ))
+    */
  
  // during production 
- /*
   const store = createStore(rootReducer, initialState,
      applyMiddleware(...middleware)) 
- */
 
 
 

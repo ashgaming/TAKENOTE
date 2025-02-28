@@ -2,8 +2,6 @@ const imageService = require('../services/functions.services')
 
 module.exports.uploadImage = async (req, res, next) => {
 
-    console.log('controller hit')
-
     const file = req.file;
 
     if (!file) {
