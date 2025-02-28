@@ -14,6 +14,7 @@ const App = () => {
   if(user?.user){ dispatch(setUpSocket())};
   return (
     <>
+    
       <Router>
         <Routes>
           <Route path='/' element={ <Wrapper> <Home/> </Wrapper>} exact />
