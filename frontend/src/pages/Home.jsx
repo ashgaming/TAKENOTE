@@ -1,71 +1,105 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getChatIds, sendMsg } from '../redux/actions/msg.action';
 import SideBar from '../components/layouts/SideBar';
 import Navbar from '../components/layouts/Navbar';
 import ChatArea from '../components/sections/chatSection/ChatArea';
 import InputArea from '../components/sections/chatSection/InputArea';
 import CameraPanel from '../components/sections/chatSection/CameraPanel';
+import ImageInputPanel from '../components/sections/chatSection/ImageInputPanel';
+import { globalVariable } from '../context/variables.context';
+import CapuredImagePreviewPanel from '../components/sections/chatSection/CapuredImagePreviewPanel';
 
+// Memoized versions of components
+const MemoizedSideBar = React.memo(SideBar);
+const MemoizedNavbar = React.memo(Navbar);
+const MemoizedChatArea = React.memo(ChatArea);
+const MemoizedInputArea = React.memo(InputArea);
+const MemoizedCameraPanel = React.memo(CameraPanel);
+const MemoizedCameraInputPanel = React.memo(ImageInputPanel);
 
 const Home = () => {
-
-    const [messages, setMessages] = useState([]);
-    const [inputText, setInputText] = useState('');
-    
-    const [showCameraPanel, setShowCameraPanel] = useState(false);
+    const dispatch = useDispatch();
+     
+    // State
+   
+    const inputTextRef = useRef(null);
+    // const [isSidebarOpen, setSidebarOpen] = useState(false);
    
 
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
+    const {
+         isSidebarOpen  , toggleSidebar ,
+         showCameraPanel, setShowCameraPanel ,
+         showCameraInputPanel, setShowCameraInputPanel,
+         chat_ids, chatId, setChatId ,
+         messages , setMessages
+        } = globalVariable();
 
 
-    
 
-  
+    // Fetch chat IDs once on mount
+    useEffect(() => {
+        dispatch(getChatIds());
+    }, [dispatch]);
 
-    const handleSubmit = (e) => {
+    // Prevent function recreation using useCallback
+   
+
+    const handleSubmit = useCallback((e) => {
         e.preventDefault();
+        const inputText = inputTextRef.current.value;
         if (inputText.trim()) {
             const newMessage = {
                 type: 'user',
                 text: inputText,
                 timestamp: new Date().toISOString()
             };
-            setMessages([...messages, newMessage]);
 
-            setTimeout(() => {
-                setMessages(prev => [...prev, {
-                    type: 'ai',
-                    text: 'This is a simulated AI response to your message.',
-                    timestamp: new Date().toISOString()
-                }]);
-            }, 1000);
-            setInputText('');
+            setMessages(prevMessages => [...prevMessages, newMessage]);
+
+            const fdata = {
+                text: inputText,
+                chatId: chatId || undefined
+            };
+
+            dispatch(sendMsg(fdata, setMessages, setChatId));
+            inputTextRef.current.value = '';
         }
-    };
+    }, [dispatch, chatId]);
 
-   
     return (
         <div className="flex h-screen bg-gray-900">
-
-            <SideBar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <MemoizedSideBar
+                isSidebarOpen={isSidebarOpen}
+                toggleSidebar={toggleSidebar}
+                setChatId={setChatId}
+                chat_ids={chat_ids}
+                chatId={chatId}
+            />
 
             <div className="flex-1 flex flex-col relative">
+                <MemoizedNavbar />
 
-                <Navbar toggleSidebar={toggleSidebar} />
-
-                {/* Camera Panel */}
                 {showCameraPanel && (
-                    <CameraPanel  setMessages={setMessages} setShowCameraPanel={setShowCameraPanel}/>
+                    <MemoizedCameraPanel setMessages={setMessages}/>
                 )}
 
-                
-                <ChatArea messages={messages} />
+                {showCameraInputPanel && (
+                    <MemoizedCameraInputPanel setShowCameraInputPanel={setShowCameraInputPanel} />
+                )}
 
-          
-                <InputArea handleSubmit={handleSubmit} inputText={inputText} setInputText={setInputText} setShowCameraPanel={setShowCameraPanel}/>
+                {/* <CapuredImagePreviewPanel /> */}
+
+                <MemoizedChatArea messages={messages} />
+
+                <MemoizedInputArea
+                    handleSubmit={handleSubmit}
+                    inputTextRef={inputTextRef}
+                    setShowCameraPanel={setShowCameraPanel}
+                />
             </div>
         </div>
     );
-}
+};
 
 export default Home;

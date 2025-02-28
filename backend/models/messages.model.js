@@ -7,22 +7,30 @@ const messagesSchema = new mongoose.Schema({
         ref: 'user',
         required: true
     },
-    msg:{
-        type:String,
-        required:true
+    chatId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'chat',
+        validate: {
+            validator: (v) => mongoose.Types.ObjectId.isValid(v),
+            message: 'Invalid chatId format'
+        }
     },
-    image:{
-        type:String,
-        required:false
+    msg: {
+        type: String,
+        required: true
     },
-    remindTime:{
-        type:String,
-        required:false
+    image: {
+        type: String,
+        required: false
+    },
+    remindTime: {
+        type: String,
+        required: false
     }
 
 },
-{ timestamps:true})
+    { timestamps: true })
 
-const messagesModel = mongoose.model('user', userSchema);
+const messagesModel = mongoose.model('msg', messagesSchema);
 
 module.exports = messagesModel;

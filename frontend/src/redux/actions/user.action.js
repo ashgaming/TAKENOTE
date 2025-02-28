@@ -4,8 +4,6 @@ import { clearUserSession, getUserSession, setUserSession } from '../methods/use
 
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ? import.meta.env.VITE_BACKEND_URL : 'http://localhost:4000'
 
-console.log(BACKEND_URL)
-
 export const getUserData = () => async (dispatch, navigate) => {
 
     const token = localStorage.getItem('token') ? getUserSession().token : null;
@@ -66,6 +64,8 @@ export const userLogin = (fdata) => async (dispatch) => {
             }
         }
 
+        console.log(`${BACKEND_URL}/users/login`)
+
         const { data } = await axios.post(`${BACKEND_URL}/users/login`,
             fdata,
             config)
@@ -83,6 +83,8 @@ export const userLogin = (fdata) => async (dispatch) => {
        
     }
     catch (error) {
+
+        console.log(error)
         dispatch({
             type: LOGIN_USER_ERROR,
             payload: error.response && error.response.data.message

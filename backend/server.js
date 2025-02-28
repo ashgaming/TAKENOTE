@@ -8,5 +8,5 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 server.listen(port,()=>{
-    console.log(`server is running on port:http://localhost:${port}`)
+    console.log(`\nserver is running on port : http://localhost:${port}`)
 });

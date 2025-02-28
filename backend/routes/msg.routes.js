@@ -1,40 +1,33 @@
 const express = require('express')
 const router = express.Router();
 const { body , query } = require("express-validator")
-const userController = require('../controllers/user.controller')
+const msgController = require('../controllers/msg.controller')
 const authMiddleware = require('../middlewares/auth.middleware')
+const multerMiddleware = require('../middlewares/file.middleware')
 
 
 router.post('/set-reminder',[
-   body('email').isEmail().withMessage('Invalid Email'),
-   body('firstname').isLength({min:3}).withMessage('First name must be 3 character long'),
-   body('lastname').isLength({min:3}).withMessage('Last name must be 3 character long'),
-   body('password').isLength({min:8}).withMessage('Password must be 8 letter long')
-],userController.registerUser)
+   body('msg').isString().withMessage('Invalid MSG'),
+   body('remindTime').isLength({min:3}).optional().withMessage('Reminder time must be 3 character long'),
+   body('image').isString({min:3}).optional().withMessage('Image not find must be 3 character long'),
+   body('ChatId').isString({min:3}).optional().withMessage('Chat ID must be 3 character long'),
+], multerMiddleware.upload.single('image') ,authMiddleware.authUser , msgController.registerMsg)
 
 router.post('/send',[
-    body('email').isEmail().withMessage('Invalid Email'),
-    body('password').isLength({min:8}).withMessage('Password must be 8 letter long')
-],userController.loginUser)
+    body('msg').isString().withMessage('Invalid MSG'),
+], authMiddleware.authUser ,msgController.sendMsg)
 
 router.get('/get',[
-    body('email').isEmail().withMessage('Invalid Email'),
-    body('password').isLength({min:8}).withMessage('Password must be 8 letter long')
-],userController.loginUser)
+    query('chatId').isMongoId().withMessage('Invalid ChatId'),
+],authMiddleware.authUser ,msgController.getMsg)
 
 
-router.delete('/delete',[
-    body('email').isEmail().withMessage('Invalid Email'),
-    body('password').isLength({min:8}).withMessage('Password must be 8 letter long')
-],userController.loginUser)
+router.delete('/chat/delete',[
+    query('chatId').isMongoId().withMessage('Invalid Email'),
+],authMiddleware.authUser ,msgController.deleteChat)
 
 
-
-
-
-
-
-
+router.get('/get-chat-ids',authMiddleware.authUser ,msgController.getChatIds)
 
 
 

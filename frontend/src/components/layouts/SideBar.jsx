@@ -1,22 +1,34 @@
-import { LogIn, LogOut, MessageSquare, Settings, X } from 'lucide-react'
+import { LogIn, LogOut, MessageSquare, Settings, Trash, X } from 'lucide-react'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../redux/actions/user.action';
 import { useNavigate } from 'react-router-dom';
+import { deleteMsg } from '../../redux/actions/msg.action';
+import { globalVariable } from '../../context/variables.context';
 
-const SideBar = ({ isSidebarOpen, toggleSidebar }) => {
+const SideBar = ({ chat_ids,  }) => {
     const name = import.meta.env.PROJECT_NAME || 'TAKENOTE';
     const { user } = useSelector(state => state.UserData)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const HandleLoginBtnClick = () =>{
-        if(user?.user?._id){
+    const { isSidebarOpen, toggleSidebar , chatId ,setChatId } = globalVariable();
+
+    const HandleLoginBtnClick = () => {
+        if (user?.user?._id) {
             dispatch(logoutUser())
-        }else{
+        } else {
             navigate('/users/login')
         }
     }
+
+    const HandleDeleteChat = (e,chatId) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        dispatch(deleteMsg(chatId , setChatId))
+    }
+    
     return (
         <>
             {isSidebarOpen && (
@@ -40,12 +52,18 @@ const SideBar = ({ isSidebarOpen, toggleSidebar }) => {
                             <X size={24} />
                         </button>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                        {[1, 2, 3].map((chat) => (
-                            <div key={chat} className="p-3 hover:bg-violet-900/20 rounded-lg cursor-pointer flex items-center space-x-3">
-                                <MessageSquare className="text-violet-500" size={20} />
-                                <span className="text-gray-300">Chat {chat}</span>
-                            </div>
+                    <div className="flex-1 p-4 space-y-2 overflow-y-scroll scrollbar-hide ">
+                        {chat_ids && chat_ids.map((chat,index) => (
+                            <button key={index} className='w-full' onClick={()=>{
+                                setChatId(chat._id)
+                                localStorage.setItem('last_active_chat',chat._id)
+                                }}>
+                                <div className={`p-3 hover:bg-violet-800/20 rounded-lg cursor-pointer flex items-center space-x-3 ${chatId === chat._id ? 'bg-violet-900/20' : ''}  `}>
+                                    <MessageSquare className="text-violet-500" size={20} />
+                                    <span className="text-gray-300">Chat {(chat._id || '').slice(-5, -1)}</span>
+                                    <div onClick={(e)=>HandleDeleteChat(e,chat._id) } className="text-gray-300 right-7 justify-end items-end hover:bg-black/20 p-2 rounded-lg cursor-pointer "> <Trash /> </div>
+                                </div>
+                            </button>
                         ))}
                     </div>
                     <div className="p-4 border-t border-gray-700">

@@ -3,9 +3,9 @@ const ora = require("ora");
 
 async function connectToDB() {
     mongoose.set('debug', true);
-    console.log('Database URL:', process.env.DATABASE_URL);
+   // console.log('Database URL:', process.env.DATABASE_URL);
 
-    const spinner = ora('Connecting to MongoDB...').start(); // Start loader
+    const spinner = ora('Connecting to MongoDB...\t').start(); // Start loader
 
     try {
         await mongoose.connect(process.env.DATABASE_URL, {

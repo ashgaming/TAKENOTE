@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux';
 import { userDataReducer, userLoginReducer, userRegisterReducer } from './reducers/user.reducer';
-import { deleteMsgReducer, deleteReminderReducer, getMsgReducer, getReminderReducer, registerReminderReducer, sendMsgReducer } from './reducers/msg.reducer';
+import { deleteMsgReducer, deleteReminderReducer, getChatIdsReducer, getMsgReducer, getReminderReducer, registerReminderReducer, sendMsgReducer } from './reducers/msg.reducer';
 import { SocketReducer } from './reducers/socket.reducer';
-
 
 const rootReducer = combineReducers({
     UserLogin: userLoginReducer,
@@ -16,9 +15,9 @@ const rootReducer = combineReducers({
     SendMsg: sendMsgReducer,
     GetMsg: getMsgReducer,
     DOMExceptioneleteMsg: deleteMsgReducer,
-    SocketReducer:SocketReducer
-    ,
+    SocketReducer:SocketReducer,
 
+    GetChatIds : getChatIdsReducer,
 
 });
 
